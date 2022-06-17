@@ -1,5 +1,4 @@
 import { Form, Table } from 'antd'
-import 'antd/dist/antd.css'
 import { FC, useState } from 'react'
 import SelectWithSearchLayout from "../FormSelectWithSearch/FormSelectWithSearch";
 import { useForm} from "react-hook-form";

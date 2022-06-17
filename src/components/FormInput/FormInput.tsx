@@ -1,5 +1,4 @@
 import { Input } from "antd";
-import 'antd/dist/antd.css'
 import { FC } from "react";
 import { Controller } from "react-hook-form";
 import { FormInputProps } from "../../interfaces";
