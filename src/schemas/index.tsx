@@ -19,17 +19,35 @@ export const formInfoSchema = yup.object().shape(
         mapValues(obj, (_, key) => {
           if (key === "main") {
             return yup.object({
-              name: yup.string().required('This raw is required'),
-                    age: yup.string().required('This raw is required'),
-                    address: yup.string().required('This raw is required')
+              name: yup.string().required('This row is required'),
+                    age: yup.string().required('This row is required'),
+                    address: yup.string().required('This row is required')
             })
           }
-
-          return yup.object({
-              name: yup.string().required('This raw is required'),
-              age: yup.string().required('This raw is required'),
-              address: yup.string().required('This raw is required')
-            })
+          return yup.object().shape(
+            {
+              name: yup.string().when(['age', 'address'], {
+                is: (age: string, address: string) => age || address,
+                then: yup.string().required('This row is required'),
+                otherwise: yup.string().notRequired()
+              }),
+              age: yup.string().when(['name', 'address'], {
+                is: (name: string, address: string) => name || address,
+                then: yup.string().required('This row is required'),
+                otherwise: yup.string().notRequired()
+              }),
+              address: yup.string().when(['name', 'age'], {
+                is: (name: string, age: string) => name || age,
+                then: yup.string().required('This row is required'),
+                otherwise: yup.string().notRequired()
+              })
+            },
+            [
+              ['age', 'address'],
+              ['name', 'address'],
+              ['name', 'age']
+            ]
+          )
         })
       )
     )

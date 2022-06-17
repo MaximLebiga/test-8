@@ -1,38 +1,55 @@
-import { Form, Table } from "antd";
-import { FC, useEffect, useState } from "react";
-import SelectWithSearchLayout from "../layouts/SelectWithSearchLayout/SelectWithSearchLayout";
-import { FormValues } from '../../interfaces'
+import { Form, Table } from 'antd'
+import 'antd/dist/antd.css'
+import { FC, useState } from 'react'
+import SelectWithSearchLayout from "../FormSelectWithSearch/FormSelectWithSearch";
 import { useForm} from "react-hook-form";
 import { columns, values } from "../../MockData";
-import { createError } from "../../utils";
-import DatePickerLayout from "../layouts/DatePickerLayout/DatePickerLayout";
+import FormDatePicker from '../FormDatePicker/FormDatePicker'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { formInfoSchema } from "../../schemas";
-import RowLayout from "../layouts/RowLayout/RowLayout";
+import { createFormTableRow } from '../../utils';
+import { FormValues } from '../../types';
+import style from "./FormInfo.module.css"
 
 const FormInfo: FC = () => {
+  const [submitStatus, setSubmitStatus] = useState(false)
   const {
     control,
     handleSubmit,
     setError,
     clearErrors,
     getValues,
-    formState: { errors }
+    unregister,
   } = useForm<FormValues>({
     resolver: yupResolver(formInfoSchema)
   })
   const [data, setData] = useState([
-    RowLayout({
+    createFormTableRow({
       control,
       main: true,
       setError,
       clearErrors,
       getValues,
-      errors,
-    })  
+      handleButtonDeleteClick
+    })
   ])
 
-  useEffect(() => {console.log(data)}, [errors, data])
+  const handleSubmitForm = (data: FormValues) => {
+    const tableKeys = Object.keys(data.table)
+    for (const key of tableKeys) {
+      if (!data.table[key].name) {
+        delete data.table[key]
+      }
+    }
+    console.log(data)
+    setSubmitStatus(prevState => !prevState)
+  }
+
+
+ function handleButtonDeleteClick (id: string) {
+   setData((prevState) => prevState.filter((data) => data.key !== id))
+   unregister(`table.${id}`)
+  }
   
   return (
     <Form
@@ -44,23 +61,19 @@ const FormInfo: FC = () => {
       }}
       layout="horizontal"
       size="middle"
-      onFinish={handleSubmit((data) => {
-        console.log(data)
-      })}
+      onFinish={handleSubmit(handleSubmitForm)}
+      className={style.form}
     >
-      <Form.Item label="Name">
+      <Form.Item label="Name" className={style.form_item}>
         <SelectWithSearchLayout
           options={values}
           control={control}
           name="name"
-          errors={[errors['name']?.message]}
           setError={setError}
-          clearErrors={clearErrors}
-          getValues={getValues}
         />
       </Form.Item>
-      <Form.Item label="From">
-        <DatePickerLayout
+      <Form.Item label="From" className={style.form_item}>
+        <FormDatePicker
           name="from"
           check="to"
           control={control}
@@ -69,8 +82,8 @@ const FormInfo: FC = () => {
           getValues={getValues}
         />
       </Form.Item>
-      <Form.Item label="To">
-        <DatePickerLayout
+      <Form.Item label="To" className={style.form_item}>
+        <FormDatePicker
           name="to"
           check="from"
           control={control}
@@ -78,20 +91,37 @@ const FormInfo: FC = () => {
           clearErrors={clearErrors}
           getValues={getValues}
         />
-        {createError([errors.to?.message])}
       </Form.Item>
-      <Form.Item>
-        <Table columns={columns} dataSource={data} pagination={false} />
+      <Form.Item className={style.table}>
+        <Table
+          columns={columns}
+          dataSource={data}
+          pagination={false}
+        />
         <button
           type="button"
           onClick={() => {
-            setData((prevState) => [...prevState, RowLayout({ control, main: false, errors })])
+            setData((prevState) => [
+              ...prevState,
+              createFormTableRow({
+                control,
+                main: false,
+                setError,
+                clearErrors,
+                getValues,
+                handleButtonDeleteClick
+              })
+            ])
           }}
+          className={style.button}
         >
           Add raw
         </button>
       </Form.Item>
-      <button type="submit">Submit</button>
+      <button type="submit" className={style.button}>
+        Submit
+      </button>
+      {submitStatus && <p>Success</p>}
     </Form>
   )
 }

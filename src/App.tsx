@@ -4,7 +4,9 @@ import FormInfo from './components/FormInfo/FormInfo'
 function App() {
   return (
     <div className="App">
-      <FormInfo />
+      <div className='section'>
+        <FormInfo />
+      </div>
     </div>
   )
 }
