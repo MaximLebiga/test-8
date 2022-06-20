@@ -24,6 +24,7 @@ const FormInput: FC<FormInputProps> = ({
             onBlur={() => handleBlur(value, name, id)}
             type={type}
             status={error?.message && 'error'}
+            min={type === 'number' ? 1 : undefined}
           />
           {error?.message && <ErrorMessage error={error?.message} />}
         </>

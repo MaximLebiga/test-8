@@ -7,21 +7,29 @@ export const formInfoSchema = yup.object().shape(
     from: yup.string().when('to', {
       is: (to: string) => to,
       then: yup.string().notRequired(),
-      otherwise: yup.string().required('Fill in at least one field')
+      otherwise: yup
+        .string()
+        .nullable(true)
+        .transform((_, val) => (typeof val === 'string' ? val : null))
+        .required('Fill in at least one field')
     }),
     to: yup.string().when('from', {
       is: (from: string) => from,
       then: yup.string().notRequired(),
-      otherwise: yup.string().required('Fill in at least one field')
+      otherwise: yup
+        .string()
+        .nullable(true)
+        .transform((_, val) => (typeof val === 'string' ? val : null))
+        .required('Fill in at least one field')
     }),
     table: yup.lazy((obj) =>
       yup.object(
         mapValues(obj, (_, key) => {
-          if (key === "main") {
+          if (key === 'main') {
             return yup.object({
               name: yup.string().required('This row is required'),
-                    age: yup.string().required('This row is required'),
-                    address: yup.string().required('This row is required')
+              age: yup.string().required('This row is required'),
+              address: yup.string().required('This row is required')
             })
           }
           return yup.object().shape(
