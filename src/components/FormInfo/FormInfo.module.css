@@ -16,7 +16,8 @@
 .table {
   width: 1000px; 
   box-sizing: content-box; 
-  align-self: flex-start
+  align-self: flex-start;
+  padding-top: 0px
 }
 
 .button {

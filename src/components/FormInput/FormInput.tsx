@@ -3,6 +3,7 @@ import { FC } from "react";
 import { Controller } from "react-hook-form";
 import { FormInputProps } from "../../interfaces";
 import { ErrorMessage } from "../ErrorMessage/ErrorMessage";
+import style from "./FormInput.module.css"
 
 const FormInput: FC<FormInputProps> = ({
   id,
@@ -25,6 +26,7 @@ const FormInput: FC<FormInputProps> = ({
             type={type}
             status={error?.message && 'error'}
             min={type === 'number' ? 1 : undefined}
+            className={style.input}
           />
           {error?.message && <ErrorMessage error={error?.message} />}
         </>

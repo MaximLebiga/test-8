@@ -120,7 +120,7 @@ const FormInfo: FC = () => {
       <button type="submit" className={style.button}>
         Submit
       </button>
-      {submitStatus && <p style={{color: 'green'}}>Success</p>}
+      {submitStatus && <p style={{ color: 'green' }}>Success</p>}
     </Form>
   )
 }
