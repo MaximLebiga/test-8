@@ -30,14 +30,13 @@ const FormDatePicker: FC<FormDatePickerProps> = ({
     const date = getValues(check)
     const currentDate = moment().endOf('day')
     if (date && check === 'to') {
-      return current > date ||  current < currentDate
+      return current < currentDate || current > date
     }
 
     if (date && check === 'from') {
       return current < date
     }
-
-    return current < currentDate || current === currentDate
+    return current < currentDate
   }
 
   return (
