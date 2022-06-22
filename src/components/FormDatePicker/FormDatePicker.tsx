@@ -28,15 +28,16 @@ const FormDatePicker: FC<FormDatePickerProps> = ({
 
   const disableDate = (current: any) => {
     const date = getValues(check)
-    if (date && check === 'from') {
-      return current < date || moment().endOf('day') < current
-    }
-
+    const currentDate = moment().endOf('day')
     if (date && check === 'to') {
-      return current > date
+      return current > date ||  current < currentDate
     }
 
-    return current > moment().endOf('day')
+    if (date && check === 'from') {
+      return current < date
+    }
+
+    return current < currentDate || current === currentDate
   }
 
   return (
